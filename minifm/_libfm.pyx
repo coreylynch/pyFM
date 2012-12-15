@@ -80,25 +80,21 @@ cdef extern from "src/reallib.h":
 		void init(DOUBLE, DOUBLE)
 
 
-def train(train_data, method, task, dim):
+def train(train_data, method, task, dim, learn_rate, param_init_stdev, reg):
 	
 	# Load training data
 	
-	# Mock train data
+	# Set params for sgd
 	cache_size = 100000000
 	has_x = True
 	has_xt = True
-	verbose = False
 
 	cdef Data *train = new Data(cache_size, has_x, has_xt)
 	deref(train).load(train_data)
-	if verbose is True:
-		deref(train).debug()
 
 	# Setup the factorization machine
 
 	# Mock factorization machine data
-	param_init_stdev = 0.1
 	use_bias = True
 	use_one_way = True
 
@@ -131,13 +127,13 @@ def train(train_data, method, task, dim):
 			deref(fml).task = 1		
 		deref(fml).init()
 
-		# No regularization for now
-		fm.reg0 = 0.0
-		fm.regw = 0.0
-		fm.regv = 0.0
+		# Set regularization
+		deref(fm).reg0 = reg
+		deref(fm).regw = reg
+		deref(fm).regv = reg
 
 		# mock learn rate
-		deref(fml).learn_rate = 0.01
+		deref(fml).learn_rate = learn_rate
 
 		# learn
 		deref(fml).learn(deref(train))
