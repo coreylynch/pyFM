@@ -1,4 +1,4 @@
-from sklearn.datasets import dump_svmlight_file
+from svmlight_format import dump_svmlight_file
 from scipy.sparse import csr_matrix
 import pandas as pd
 import numpy as np

@@ -8,6 +8,11 @@ Factorization machines (FM) are a generic approach that allows to mimic most fac
 
 compat.py implements an sklearn base.BaseEstimator to allow this library to be incorporated into a broader workflow in python.
 
+## Dependencies
+* cython >= 0.17 (previous versions will not work)
+* numpy
+* pandas
+
 ## Installation
 1. Download libFM source code from http://www.libfm.org/
 2. Extract the source

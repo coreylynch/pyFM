@@ -10,5 +10,4 @@
 #include "libfm/src/Data.h"
 #include "libfm/src/fm_learn.h"
 #include "libfm/src/fm_learn_sgd.h"
-#include "libfm/src/fm_learn_sgd_element.h"
 #include "libfm/src/fm_learn_sgd_element_new.h"
