@@ -11,11 +11,11 @@ compat.py implements an sklearn base.BaseEstimator to allow this library to be i
 ## Installation
 1. Download libFM source code from http://www.libfm.org/
 2. Extract the source
-3. cp -r libfm/src pylibfm/minifm/
-4. cd pylibfm 
-5. python setup.py install 
+3. ```cp -r libfm/src pylibfm/minifm/```
+4. ```cd pylibfm``` 
+5. ```python setup.py install``` 
 
-## Note
+## License
 From libfm's license.txt:
 1. This software is free of charge for academic purposes. Please contact the author if you want to use this software for commercial purposes.
 2. You are not allowed to redistribute this software or its source code.
