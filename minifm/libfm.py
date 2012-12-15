@@ -10,14 +10,14 @@ def fm_train(X, y, cat_columns, num_columns=None, n_iter=5,
 	if num_columns is not None:
 		with tempfile.NamedTemporaryFile(delete=False) as f:
 			dump_categorical_df_to_svm_light(X, y, f.name, cat_columns,
-											 num_columns)
+										     num_columns)
 	else:
 		with tempfile.NamedTemporaryFile(delete=False) as f:
 			dump_categorical_df_to_svm_light(X, y, f.name, cat_columns)
 	coef, v_file, bias, m_sum, m_sum_sqr = _libfm.train(f.name, method, task,
-													    dim, learn_rate,
-													    param_init_stdev,
-													    reg)
+														dim, learn_rate,
+														param_init_stdev,
+														reg)
 	os.unlink(f.name)
 	return coef, v_file, bias, m_sum, m_sum_sqr
 
@@ -29,10 +29,11 @@ def fm_predict(X, method, coef, v_file, bias, m_sum, m_sum_sqr,
 	if num_columns is not None:
 		with tempfile.NamedTemporaryFile(delete=False) as f:
 			dump_categorical_df_to_svm_light(X, y, f.name, cat_columns,
-											 num_columns)
+										     num_columns)
 	else:
 		with tempfile.NamedTemporaryFile(delete=False) as f:
 			dump_categorical_df_to_svm_light(X, y, f.name, cat_columns)	
-	prediction = _libfm.predict(f.name, method, coef, v_file, bias, m_sum, m_sum_sqr, dim, task)
+	prediction = _libfm.predict(f.name, method, coef, v_file, bias, m_sum,
+								m_sum_sqr, dim, task)
 	os.unlink(f.name)
 	return prediction
