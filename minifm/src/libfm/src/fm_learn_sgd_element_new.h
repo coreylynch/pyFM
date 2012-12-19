@@ -74,7 +74,7 @@ class fm_learn_sgd_element_new{
 					p = std::min(max_target, p);
 					p = std::max(min_target, p);
 				} else if (task == TASK_CLASSIFICATION) {
-				p = 1.0/(1.0 + exp(-p));}
+				p = 1.0/(1.0 + exp(-p));
 				} else {
 					throw "task not supported";
 				}
