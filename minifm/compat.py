@@ -1,5 +1,5 @@
 import numpy as np
-from .libfm import fm_train, fm_predict
+from libfm import fm_train, fm_predict
 from sklearn import base
 
 def _prepare_fit(y):

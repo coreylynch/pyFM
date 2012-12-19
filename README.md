@@ -17,7 +17,7 @@ compat.py implements an sklearn base.BaseEstimator to allow this library to be i
 2. Extract the source (```wget http://www.libfm.org/libfm-1.30.src.tar.gz```)
 3. ```cp -r libfm-1.30.src/src pyLibFM/minifm/```
 4. ```cd pyLibFm``` 
-5. ```python setup.py install``` 
+5. ```python setup.py build_ext --inplace``` 
 
 
 ## License
