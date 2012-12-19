@@ -81,8 +81,7 @@ class fm_learn_sgd_element_new{
 
 				out(data.data->getRowIndex()) = p;				
 		}
-
-		
+	}
 };
 
 #endif /*FM_LEARN_SGD_ELEMENT_H_*/

@@ -1,6 +1,6 @@
 # Factorization Machines in Python
 
-Cython bindings to Steffen Rendle’s [LibFM](http://www.libfm.org/), a c++ library implementing factorization machines for collaborative filtering and recommendation.
+Work in progress Cython bindings to Steffen Rendle’s [LibFM](http://www.libfm.org/), a c++ library implementing factorization machines for collaborative filtering and recommendation.
 
 Factorization machines (FM) are a generic approach that allows to mimic most factorization models by feature engineering. This way, factorization machines combine the generality of feature engineering with the superiority of factorization models in estimating interactions between categorical variables of large domain.
 
@@ -16,7 +16,7 @@ compat.py implements an sklearn base.BaseEstimator to allow this library to be i
 1. Download libFM source code from http://www.libfm.org/
 2. Extract the source (```wget http://www.libfm.org/libfm-1.30.src.tar.gz```)
 3. ```cp -r libfm-1.30.src/src pyLibFM/minifm/```
-4. ```cd pylibfm``` 
+4. ```cd pyLibFm``` 
 5. ```python setup.py install``` 
 
 
