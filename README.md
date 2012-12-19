@@ -10,6 +10,7 @@ compat.py implements an sklearn base.BaseEstimator to allow this library to be i
 * cython >= 0.17 (previous versions will not work)
 * numpy
 * pandas
+* libFM source
 
 ## Installation
 1. Download libFM source code from http://www.libfm.org/
@@ -17,6 +18,7 @@ compat.py implements an sklearn base.BaseEstimator to allow this library to be i
 3. ```cp -r libfm/src pylibfm/minifm/```
 4. ```cd pylibfm``` 
 5. ```python setup.py install``` 
+
 
 ## License
 From libfm's license.txt:

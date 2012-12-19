@@ -70,18 +70,16 @@ class fm_learn_sgd_element_new{
 			assert(data.data->getNumRows() == out.dim);
 			for (data.data->begin(); !data.data->end(); data.data->next()) {
 				double p = predict_case(data);
-				//if (task == TASK_REGRESSION ) {
-				//	p = std::min(max_target, p);
-				//	p = std::max(min_target, p);
-				//} else if (task == TASK_CLASSIFICATION) {
-				if (task == TASK_CLASSIFICATION){
+				if (task == TASK_REGRESSION ) {
+					p = std::min(max_target, p);
+					p = std::max(min_target, p);
+				} else if (task == TASK_CLASSIFICATION) {
 				p = 1.0/(1.0 + exp(-p));}
-				//} else {
-				//	throw "task not supported";
-				//}
+				} else {
+					throw "task not supported";
+				}
 
-				out(data.data->getRowIndex()) = p;
-			}				
+				out(data.data->getRowIndex()) = p;				
 		}
 
 		
