@@ -2,49 +2,6 @@ import numpy as np
 from sklearn import cross_validation
 from sklearn.feature_extraction import DictVectorizer
 
-def objective(data,U,V,lbda):
-    """compute objective function F(U,V)
-    params:
-      data: scipy csr sparse matrix containing user->(item,count)
-      U   : user factors
-      V   : item factors
-      lbda: regularization constant lambda
-    returns:
-      current value of F(U,V)
-    """
-    F = -0.5*lbda*(np.sum(U*U)+np.sum(V*V))
-    for i in xrange(len(U)):
-        f = precompute_f(data,U,V,i)
-        for j in f:
-            F += log(g(f[j]))
-            for k in f:
-                F += log(1-g(f[k]-f[j]))
-    return F
-
-
-def compute_mrr(data,U,V,test_users=None):
-    """compute average Mean Reciprocal Rank of data according to factors
-    params:
-      data      : scipy csr sparse matrix containing user->(item,count)
-      U         : user factors
-      V         : item factors
-      test_users: optional subset of users over which to compute MRR
-    returns:
-      the mean MRR over all users in data
-    """
-    mrr = []
-    if test_users is None:
-        test_users = range(len(U))
-    for ix,i in enumerate(test_users):
-        items = set(data[i].indices)
-        predictions = np.sum(np.tile(U[i],(len(V),1))*V,axis=1)
-        for rank,item in enumerate(np.argsort(predictions)[::-1]):
-            if item in items:
-                mrr.append(1.0/(rank+1))
-                break
-    assert(len(mrr) == len(test_users))
-    return np.mean(mrr)
-
 class FM:
     def __init__(self, learn_rate=0.01, num_factors=10, num_iter=1, param_regular = (0,0,0.1), k0=True, k1=True, task='classification', verbose=False):
         self.num_factors = num_factors
@@ -194,48 +151,3 @@ class FM:
                 self.sum_sqr += d*d
             result += 0.5 * (self.sum[f]*self.sum[f] - self.sum_sqr[f])
         return result
-
-if __name__=='__main__':
-
-    from optparse import OptionParser
-    from scipy.io.mmio import mmread
-    import random
-
-    parser = OptionParser()
-    parser.add_option('--train',dest='train',help='training dataset (matrixmarket format)')
-    #parser.add_option('--test',dest='test',help='optional test dataset (matrixmarket format)')
-    parser.add_option('-d','--dim',dest='D',type='int',default=10,help='dimensionality of factors (default: %default)')
-    #parser.add_option('-l','--lambda',dest='lbda',type='float',default=0.001,help='regularization constant lambda (default: %default)')
-    #parser.add_option('-g','--gamma',dest='gamma',type='float',default=0.0001,help='gradient ascent learning rate gamma (default: %default)')
-    parser.add_option('--max_iters',dest='max_iters',type='int',default=25,help='max iterations (default: %default)')
-
-    (opts,args) = parser.parse_args()
-
-    data = mmread(opts.train).tocsr()  # this converts a 1-indexed file to a 0-indexed sparse array
-
-    X = []
-    for i in range(data.shape[0]):
-        for j in data.getrow(i).indices:
-            X.append({'0':str(i),'1':str(j)})
-    vec = DictVectorizer()
-    X = vec.fit_transform(X)
-    fm = FM(num_factors=opts.D, num_iter=opts.max_iters,verbose=True)
-    y = np.repeat(1.0,X.shape[0])
-    fm.fit(X,y)
-
-    (users,items) = data.shape
-    #mrr = []
-    #for user in range(users):
-    #    pos = set(data[user].indices)
-    #    predictions = [fm.predict(vec.transform({'0':str(user), '1':str(item)})) for item in range(items)]
-    #    for rank,item in enumerate(np.argsort(#          
-    # mrr.append(   print self.v[f.0/(rank+1))
-    #            print ("mrr: %d" % (1.0/(rank+1)))
-#
-#
-    #    items = set(data[i].indices)
-    #    predictions = np.sum(np.tile(U[i],(len(V),1))*V,axis=1)
-    #    for rank,item in enumerate(np.argsort(predictions)[::-1]):
-    #        if item in items:
-    #            mrr.append(1.0/(rank+1))
-
