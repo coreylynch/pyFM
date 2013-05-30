@@ -24,11 +24,11 @@ train = [
 ]
 v = DictVectorizer()
 X = v.fit_transform(train)
-print X.toarray() 
-[[ 24.   1.   0.   0.   1.   0.   0.   0.]
- [ 33.   0.   0.   1.   0.   1.   0.   0.]
- [ 19.   0.   1.   0.   0.   0.   1.   0.]
- [ 20.   1.   0.   0.   0.   0.   0.   1.]]
+print X.toarray()
+[[ 19.   0.   0.   0.   1.   1.   0.   0.   0.]
+ [ 33.   0.   0.   1.   0.   0.   1.   0.   0.]
+ [ 55.   0.   1.   0.   0.   0.   0.   1.   0.]
+ [ 20.   1.   0.   0.   0.   0.   0.   0.   1.]]
 
 y = np.repeat(1.0,X.shape[0])
 fm = FM(learn_rate = 0.01, num_factors=10, num_iter=1,
