@@ -1,6 +1,6 @@
 # Factorization Machines in Python
 
-This is a pure python implementation of Factorization Machines [1]. This uses stochastic gradient descent with adaptive regularization as a learning method, which adapts the regularization automatically while training the model parameters. See [2] for details. From libfm.org: "Factorization machines (FM) are a generic approach that allows to mimic most factorization models by feature engineering. This way, factorization machines combine the generality of feature engineering with the superiority of factorization models in estimating interactions between categorical variables of large domain."
+This is a python implementation of Factorization Machines [1]. This uses stochastic gradient descent with adaptive regularization as a learning method, which adapts the regularization automatically while training the model parameters. See [2] for details. From libfm.org: "Factorization machines (FM) are a generic approach that allows to mimic most factorization models by feature engineering. This way, factorization machines combine the generality of feature engineering with the superiority of factorization models in estimating interactions between categorical variables of large domain."
 
 [1] Steffen Rendle (2012): Factorization Machines with libFM, in ACM Trans. Intell. Syst. Technol., 3(3), May.
 [2] Steffen Rendle: Learning recommender systems with adaptive regularization. WSDM 2012: 133-142
@@ -37,7 +37,7 @@ fm.predict(v.transform({"user": "1", "item": "10", "age": 24}))
 ```
 
 ## Getting Started
-Here's an example on some real ratings data. 
+Here's an example on some real  movie ratings data. 
 
 First get the smallest movielens ratings dataset from http://www.grouplens.org/system/files/ml-100k.zip.
 ml-100k contains the files u.item (list of movie ids and titles) and u.data (list of user_id, movie_id, rating, timestamp).
@@ -69,7 +69,7 @@ X_train = v.fit_transform(train_data)
 X_test = v.transform(test_data)
 
 # Build and train a Factorization Machine
-fm = pylibfm.FM(num_factors=10, num_iter=10, verbose=True, init_stdev=0.1, task="regression", initial_learning_rate=0.01, learning_rate_schedule="constant")
+fm = pylibfm.FM(num_factors=10, num_iter=10, verbose=True, task="regression", initial_learning_rate=0.01, learning_rate_schedule="constant")
 
 fm.fit(X_train,y_train)
 Creating validation dataset of 0.01 of training for adaptive regularization
