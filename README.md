@@ -30,7 +30,7 @@ print X.toarray()
  [ 55.   0.   1.   0.   0.   0.   0.   1.   0.]
  [ 20.   1.   0.   0.   0.   0.   0.   0.   1.]]
 y = np.repeat(1.0,X.shape[0])
-fm = FM(learn_rate = 0.01, num_factors=10, num_iter=1,
+fm = pylibfm.FM(learn_rate = 0.01, num_factors=10, num_iter=1,
 		param_regular=(0,0,0.1))
 fm.fit(X,y)
 fm.predict(v.transform({"user": "1", "item": "10", "age": 24}))
@@ -74,25 +74,25 @@ fm = pylibfm.FM(num_factors=10, num_iter=10, verbose=True, init_stdev=0.1, task=
 fm.fit(X_train,y_train)
 Creating validation dataset of 0.01 of training for adaptive regularization
 -- Epoch 1
-RMSE: 0.49640
+Training RMSE: 0.49640
 -- Epoch 2
-RMSE: 0.44941
+Training RMSE: 0.44941
 -- Epoch 3
-RMSE: 0.44191
+Training RMSE: 0.44191
 -- Epoch 4
-RMSE: 0.44001
+Training RMSE: 0.44001
 -- Epoch 5
-RMSE: 0.44044
+Training RMSE: 0.44044
 -- Epoch 6
-RMSE: 0.44539
+Training RMSE: 0.44539
 -- Epoch 7
-RMSE: 0.45032
+Training RMSE: 0.45032
 -- Epoch 8
-RMSE: 0.43750
+Training RMSE: 0.43750
 -- Epoch 9
-RMSE: 0.43542
+Training RMSE: 0.43542
 -- Epoch 10
-RMSE: 0.43527
+Training RMSE: 0.43527
 
 # Evaluate
 preds = fm.predict(X_test)
