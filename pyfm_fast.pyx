@@ -249,7 +249,7 @@ cdef class FM_fast(object):
         for i in range(n_samples):
             dataset.next(& x_data_ptr, & x_ind_ptr, & xnnz, & y_placeholder,
                          & sample_weight)
-            p = self._predict_instance(x_data_ptr, x_ind_ptr, xnnz)
+            p = self._scale_prediction(self._predict_instance(x_data_ptr, x_ind_ptr, xnnz))
             return_preds[i] = p
         return return_preds
     

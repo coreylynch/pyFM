@@ -151,6 +151,9 @@ class FM:
         -------
         self : returns an instance of self.
         """
+        if type(y) != np.ndarray:
+            y = np.array(y)
+
         self._validate_params()
         
         if self.task == "classification":
