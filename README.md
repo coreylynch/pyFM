@@ -5,6 +5,11 @@ This is a python implementation of Factorization Machines [1]. This uses stochas
 [1] Steffen Rendle (2012): Factorization Machines with libFM, in ACM Trans. Intell. Syst. Technol., 3(3), May.
 [2] Steffen Rendle: Learning recommender systems with adaptive regularization. WSDM 2012: 133-142
 
+## Installation
+```
+python setup.py build_ext --inplace
+```
+
 ## Dependencies
 * numpy
 * sklearn
@@ -14,6 +19,7 @@ The easiest way to use this class is to represent your training data as lists of
 
 Here's a toy example
 ```python
+import pylibfm
 from sklearn.feature_extraction import DictVectorizer
 import numpy as np
 train = [
@@ -30,8 +36,7 @@ print X.toarray()
  [ 55.   0.   1.   0.   0.   0.   0.   1.   0.]
  [ 20.   1.   0.   0.   0.   0.   0.   0.   1.]]
 y = np.repeat(1.0,X.shape[0])
-fm = pylibfm.FM(learn_rate = 0.01, num_factors=10, num_iter=1,
-		param_regular=(0,0,0.1))
+fm = pylibfm.FM()
 fm.fit(X,y)
 fm.predict(v.transform({"user": "1", "item": "10", "age": 24}))
 ```
