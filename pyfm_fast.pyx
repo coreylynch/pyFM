@@ -228,8 +228,6 @@ cdef class FM_fast(object):
         if self.task == REGRESSION:
             p = min(self.max_target, p)
             p = max(self.min_target, p)
-        elif self.task == CLASSIFICATION:
-            p = 1.0 / (1.0 + exp(-p))
         return p
     
     def _predict(self, CSRDataset dataset):
