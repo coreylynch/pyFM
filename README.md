@@ -74,35 +74,92 @@ X_train = v.fit_transform(train_data)
 X_test = v.transform(test_data)
 
 # Build and train a Factorization Machine
-fm = pylibfm.FM(num_factors=10, num_iter=10, verbose=True, task="regression", initial_learning_rate=0.01, learning_rate_schedule="constant")
+fm = pylibfm.FM(num_factors=10, num_iter=100, verbose=True, task="regression", initial_learning_rate=0.001, learning_rate_schedule="optimal")
 
 fm.fit(X_train,y_train)
 Creating validation dataset of 0.01 of training for adaptive regularization
 -- Epoch 1
-Training RMSE: 0.49640
+Training RMSE: 0.59477
 -- Epoch 2
-Training RMSE: 0.44941
+Training RMSE: 0.51841
 -- Epoch 3
-Training RMSE: 0.44191
+Training RMSE: 0.49125
 -- Epoch 4
-Training RMSE: 0.44001
+Training RMSE: 0.47589
 -- Epoch 5
-Training RMSE: 0.44044
+Training RMSE: 0.46571
 -- Epoch 6
-Training RMSE: 0.44539
+Training RMSE: 0.45852
 -- Epoch 7
-Training RMSE: 0.45032
+Training RMSE: 0.45322
 -- Epoch 8
-Training RMSE: 0.43750
+Training RMSE: 0.44908
 -- Epoch 9
-Training RMSE: 0.43542
+Training RMSE: 0.44557
 -- Epoch 10
-Training RMSE: 0.43527
+Training RMSE: 0.44278
+...
+-- Epoch 98
+Training RMSE: 0.41863
+-- Epoch 99
+Training RMSE: 0.41865
+-- Epoch 100
+Training RMSE: 0.41874
 
 # Evaluate
 preds = fm.predict(X_test)
 from sklearn.metrics import mean_squared_error
 print "FM RMSE: %.4f" % mean_squared_error(y_test,preds)
-FM RMSE: 0.9253
+FM RMSE: 0.9227
+
+```
+## Classification example
+```
+import numpy as np
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.cross_validation import train_test_split
+import pylibfm
+
+from sklearn.datasets import make_classification
+
+X, y = make_classification(n_samples=1000,n_features=100, n_clusters_per_class=1)
+data = [ {v: k for k, v in dict(zip(i, range(len(i)))).items()}  for i in X]
+
+X_train, X_test, y_train, y_test = train_test_split(data, y, test_size=0.1, random_state=42)
+
+v = DictVectorizer()
+X_train = v.fit_transform(X_train)
+X_test = v.transform(X_test)
+
+fm = pylibfm.FM(num_factors=50, num_iter=10, verbose=True, task="classification", initial_learning_rate=0.0001, learning_rate_schedule="optimal")
+
+fm.fit(X_train,y_train)
+
+Creating validation dataset of 0.01 of training for adaptive regularization
+-- Epoch 1
+Training log loss: 1.91885
+-- Epoch 2
+Training log loss: 1.62022
+-- Epoch 3
+Training log loss: 1.36736
+-- Epoch 4
+Training log loss: 1.15562
+-- Epoch 5
+Training log loss: 0.97961
+-- Epoch 6
+Training log loss: 0.83356
+-- Epoch 7
+Training log loss: 0.71208
+-- Epoch 8
+Training log loss: 0.61108
+-- Epoch 9
+Training log loss: 0.52705
+-- Epoch 10
+Training log loss: 0.45685
+
+# Evaluate
+from sklearn.metrics import log_loss
+print "Validation log loss: %.4f" % log_loss(y_test,fm.predict(X_test))
+Validation log loss: 1.5025
 
 ```

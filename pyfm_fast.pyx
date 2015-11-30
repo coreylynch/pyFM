@@ -176,7 +176,7 @@ cdef class FM_fast(object):
 
         # pass sum to sgd_theta
         self.sum = sum_
-        return self._scale_prediction(result)
+        return result
 
     cdef _predict_scaled(self, DOUBLE * x_data_ptr, 
                            INTEGER * x_ind_ptr, 
@@ -200,7 +200,6 @@ cdef class FM_fast(object):
         cdef DOUBLE reg_w = self.reg_w
         cdef np.ndarray[DOUBLE, ndim=1, mode='c'] reg_v = self.reg_v
 
-
         if self.k0 > 0:
             result += w0
         if self.k1 > 0:
@@ -219,17 +218,8 @@ cdef class FM_fast(object):
                 sum_[f] += d
                 sum_sqr_[f] += d*d
             result += 0.5 * (sum_[f]*sum_[f] - sum_sqr_[f])
-
-        self.sum = sum_
         return result
 
-    cdef _scale_prediction(self, DOUBLE p):
-
-        if self.task == REGRESSION:
-            p = min(self.max_target, p)
-            p = max(self.min_target, p)
-        return p
-    
     def _predict(self, CSRDataset dataset):
         
         # Helper access variables
@@ -247,7 +237,12 @@ cdef class FM_fast(object):
         for i in range(n_samples):
             dataset.next(& x_data_ptr, & x_ind_ptr, & xnnz, & y_placeholder,
                          & sample_weight)
-            p = self._scale_prediction(self._predict_instance(x_data_ptr, x_ind_ptr, xnnz))
+            p = self._predict_instance(x_data_ptr, x_ind_ptr, xnnz)
+            if self.task == REGRESSION:
+                p = min(self.max_target, p)
+                p = max(self.min_target, p)
+            else:
+                p = (1.0 / (1.0 + exp(-p)))
             return_preds[i] = p
         return return_preds
     
@@ -269,7 +264,6 @@ cdef class FM_fast(object):
         cdef np.ndarray[DOUBLE, ndim=2, mode='c'] v = self.v
         cdef np.ndarray[DOUBLE, ndim=1, mode='c'] grad_w = self.grad_w
         cdef np.ndarray[DOUBLE, ndim=2, mode='c'] grad_v = self.grad_v
-        cdef np.ndarray[DOUBLE, ndim=1, mode='c'] sum_ = np.zeros(self.num_factors)
         cdef DOUBLE learning_rate = self.learning_rate
         cdef DOUBLE reg_0 = self.reg_0
         cdef DOUBLE reg_w = self.reg_w
@@ -308,11 +302,10 @@ cdef class FM_fast(object):
                                    + 2 * reg_w * w[feature])
 
         # Update feature factor vectors
-
         for f in range(self.num_factors):
             for i in range(xnnz):
                 feature = x_ind_ptr[i]
-                grad_v[f,feature] = mult * (x_data_ptr[i] * (sum_[f] - v[f,feature] * x_data_ptr[i]))
+                grad_v[f,feature] = mult * (x_data_ptr[i] * (self.sum[f] - v[f,feature] * x_data_ptr[i]))
                 v[f,feature] -= learning_rate * (grad_v[f,feature] + 2 * reg_v[f] * v[f,feature])
     
         # Pass updated vars to other functions
@@ -347,7 +340,6 @@ cdef class FM_fast(object):
         cdef np.ndarray[DOUBLE, ndim=2, mode='c'] v = self.v
         cdef np.ndarray[DOUBLE, ndim=1, mode='c'] grad_w = self.grad_w
         cdef np.ndarray[DOUBLE, ndim=2, mode='c'] grad_v = self.grad_v
-        cdef np.ndarray[DOUBLE, ndim=1, mode='c'] sum_ = np.zeros(self.num_factors)
         cdef DOUBLE learning_rate = self.learning_rate
         cdef DOUBLE reg_0 = self.reg_0
         cdef DOUBLE reg_w = self.reg_w
