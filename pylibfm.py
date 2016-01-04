@@ -12,7 +12,7 @@ class FM:
     Parameters
     ----------
 
-    num_factors : int 
+    num_factors : int
         The dimensionality of the factorized 2-way interactions
     num_iter : int
         Number of iterations
@@ -25,7 +25,7 @@ class FM:
         Standard deviation for initialization of 2-way factors.
         Defaults to 0.01.
     validation_size : double, optional
-        Proportion of the training set to use for validation. 
+        Proportion of the training set to use for validation.
         Defaults to 0.01.
     learning_rate_schedule : string, optional
         The learning rate:
@@ -84,12 +84,12 @@ class FM:
         self.t = 1.0
         self.learning_rate = initial_learning_rate
         self.t0 = t0
-        
+
         # Regularization Parameters (start with no regularization)
         self.reg_0 = 0.0
         self.reg_w = 0.0
         self.reg_v = np.repeat(0.0, num_factors)
-        
+
         # local parameters in the lambda_update step
         self.lambda_w_grad = 0.0
         self.lambda_v_grad = 0.0
@@ -121,7 +121,7 @@ class FM:
             return TASKS[task]
         except KeyError:
             raise ValueError("task %s "
-                             "is not supported. " % task)   
+                             "is not supported. " % task)
 
     def _bool_to_int(self, bool_arg):
         """Map bool to int for cython"""
@@ -155,7 +155,7 @@ class FM:
             y = np.array(y)
 
         self._validate_params()
-        
+
         if self.task == "classification":
             y = self._prepare_y(y)
 
@@ -172,7 +172,7 @@ class FM:
 
         # use sklearn to create a validation dataset for lambda updates
         if self.verbose == True:
-            print "Creating validation dataset of %.2f of training for adaptive regularization" % self.validation_size
+            print("Creating validation dataset of %.2f of training for adaptive regularization" % self.validation_size)
         X_train, validation, train_labels, validation_labels = cross_validation.train_test_split(
             X, y, test_size=self.validation_size)
         self.num_attribute = X_train.shape[1]
@@ -212,7 +212,7 @@ class FM:
         # report epoch information
         if self.verbose == True:
             print("-- Epoch %d" % (epoch + 1))
-            print "Train MSE: %.5f" % (self.sumloss / self.count)
+            print("Train MSE: %.5f" % (self.sumloss / self.count))
 
     def predict(self, X):
         """Predict using the factorization machine

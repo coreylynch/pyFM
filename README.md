@@ -30,7 +30,7 @@ train = [
 ]
 v = DictVectorizer()
 X = v.fit_transform(train)
-print X.toarray()
+print(X.toarray())
 [[ 19.   0.   0.   0.   1.   1.   0.   0.   0.]
  [ 33.   0.   0.   1.   0.   0.   1.   0.   0.]
  [ 55.   0.   1.   0.   0.   0.   0.   1.   0.]
@@ -42,7 +42,7 @@ fm.predict(v.transform({"user": "1", "item": "10", "age": 24}))
 ```
 
 ## Getting Started
-Here's an example on some real  movie ratings data. 
+Here's an example on some real  movie ratings data.
 
 First get the smallest movielens ratings dataset from http://www.grouplens.org/system/files/ml-100k.zip.
 ml-100k contains the files u.item (list of movie ids and titles) and u.data (list of user_id, movie_id, rating, timestamp).
@@ -109,7 +109,7 @@ Training MSE: 0.41874
 # Evaluate
 preds = fm.predict(X_test)
 from sklearn.metrics import mean_squared_error
-print "FM MSE: %.4f" % mean_squared_error(y_test,preds)
+print("FM MSE: %.4f" % mean_squared_error(y_test,preds))
 FM MSE: 0.9227
 
 ```
