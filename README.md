@@ -114,7 +114,7 @@ FM MSE: 0.9227
 
 ```
 ## Classification example
-```
+```python
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.cross_validation import train_test_split
