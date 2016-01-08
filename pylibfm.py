@@ -212,7 +212,7 @@ class FM:
         # report epoch information
         if self.verbose == True:
             print("-- Epoch %d" % (epoch + 1))
-            print "Train RMSE: %.5f" % (self.sumloss / self.count)
+            print "Train MSE: %.5f" % (self.sumloss / self.count)
 
     def predict(self, X):
         """Predict using the factorization machine

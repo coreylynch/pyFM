@@ -79,38 +79,38 @@ fm = pylibfm.FM(num_factors=10, num_iter=100, verbose=True, task="regression", i
 fm.fit(X_train,y_train)
 Creating validation dataset of 0.01 of training for adaptive regularization
 -- Epoch 1
-Training RMSE: 0.59477
+Training MSE: 0.59477
 -- Epoch 2
-Training RMSE: 0.51841
+Training MSE: 0.51841
 -- Epoch 3
-Training RMSE: 0.49125
+Training MSE: 0.49125
 -- Epoch 4
-Training RMSE: 0.47589
+Training MSE: 0.47589
 -- Epoch 5
-Training RMSE: 0.46571
+Training MSE: 0.46571
 -- Epoch 6
-Training RMSE: 0.45852
+Training MSE: 0.45852
 -- Epoch 7
-Training RMSE: 0.45322
+Training MSE: 0.45322
 -- Epoch 8
-Training RMSE: 0.44908
+Training MSE: 0.44908
 -- Epoch 9
-Training RMSE: 0.44557
+Training MSE: 0.44557
 -- Epoch 10
-Training RMSE: 0.44278
+Training MSE: 0.44278
 ...
 -- Epoch 98
-Training RMSE: 0.41863
+Training MSE: 0.41863
 -- Epoch 99
-Training RMSE: 0.41865
+Training MSE: 0.41865
 -- Epoch 100
-Training RMSE: 0.41874
+Training MSE: 0.41874
 
 # Evaluate
 preds = fm.predict(X_test)
 from sklearn.metrics import mean_squared_error
-print "FM RMSE: %.4f" % mean_squared_error(y_test,preds)
-FM RMSE: 0.9227
+print "FM MSE: %.4f" % mean_squared_error(y_test,preds)
+FM MSE: 0.9227
 
 ```
 ## Classification example

@@ -427,7 +427,7 @@ cdef class FM_fast(object):
                     self._sgd_lambda_step(validation_x_data_ptr, validation_x_ind_ptr,
                                           validation_xnnz, validation_y)
             if self.verbose > 0:
-                error_type = "RMSE" if self.task == REGRESSION else "log loss"
+                error_type = "MSE" if self.task == REGRESSION else "log loss"
                 print "Training %s: %.5f" % (error_type, (self.sumloss / self.count))
 
 cdef inline double max(double a, double b):
