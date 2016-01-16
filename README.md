@@ -7,7 +7,7 @@ This is a python implementation of Factorization Machines [1]. This uses stochas
 
 ## Installation
 ```
-python setup.py build_ext --inplace
+pip install git+https://github.com/coreylynch/pyFM
 ```
 
 ## Dependencies
@@ -19,7 +19,7 @@ The easiest way to use this class is to represent your training data as lists of
 
 Here's a toy example
 ```python
-import pylibfm
+from pyfm import pylibfm
 from sklearn.feature_extraction import DictVectorizer
 import numpy as np
 train = [
