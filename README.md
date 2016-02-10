@@ -49,7 +49,7 @@ ml-100k contains the files u.item (list of movie ids and titles) and u.data (lis
 ```python
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
-import pylibfm
+from pyfm import pylibfm
 
 # Read in data
 def loadData(filename,path="ml-100k/"):
