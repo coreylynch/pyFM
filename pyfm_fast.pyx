@@ -28,64 +28,64 @@ DEF INVERSE_SCALING = 1
 
 cdef class FM_fast(object):
     """Factorization Machine fitted by minimizing a regularized empirical loss with adaptive SGD.
-    
+
     Parameters
     ----------
     w : np.ndarray[DOUBLE, ndim=1, mode='c']
-    v : ndarray[DOUBLE, ndim=2, mode='c'] 
-    num_factors : int 
-    num_attributes : int 
-    n_iter : int 
-    k0 : int 
-    k1 : int 
-    w0 : double 
-    t : double 
-    t0 : double 
-    l : double 
-    power_t : double 
-    min_target : double 
-    max_target : double 
-    eta0 : double 
-    learning_rate_schedule : int 
-    shuffle_training : int 
-    task : int 
-    seed : int 
-    verbose : int 
+    v : ndarray[DOUBLE, ndim=2, mode='c']
+    num_factors : int
+    num_attributes : int
+    n_iter : int
+    k0 : int
+    k1 : int
+    w0 : double
+    t : double
+    t0 : double
+    l : double
+    power_t : double
+    min_target : double
+    max_target : double
+    eta0 : double
+    learning_rate_schedule : int
+    shuffle_training : int
+    task : int
+    seed : int
+    verbose : int
     """
 
-    cdef double w0
-    cdef np.ndarray w
-    cdef np.ndarray v
-    cdef int num_factors
-    cdef int num_attributes
-    cdef int n_iter
-    cdef int k0
-    cdef int k1
+    cdef public double w0
+    cdef public np.ndarray w
+    cdef public np.ndarray v
+    cdef public int num_factors
+    cdef public int num_attributes
+    cdef public int n_iter
+    cdef public int k0
+    cdef public int k1
 
-    cdef DOUBLE t
-    cdef DOUBLE t0
-    cdef DOUBLE l
-    cdef DOUBLE power_t
-    cdef DOUBLE min_target
-    cdef DOUBLE max_target
-    cdef np.ndarray sum
-    cdef np.ndarray sum_sqr
-    cdef int task
-    cdef int learning_rate_schedule
-    cdef double learning_rate
-    cdef int shuffle_training
-    cdef int seed
-    cdef int verbose
+    cdef public DOUBLE t
+    cdef public DOUBLE t0
+    cdef public DOUBLE l
+    cdef public DOUBLE power_t
+    cdef public DOUBLE min_target
+    cdef public DOUBLE max_target
+    cdef public np.ndarray sum
+    cdef public np.ndarray sum_sqr
+    cdef public int task
+    cdef public int learning_rate_schedule
+    cdef public double learning_rate
+    cdef public int shuffle_training
+    cdef public int seed
+    cdef public int verbose
 
-    cdef DOUBLE reg_0
-    cdef DOUBLE reg_w
-    cdef np.ndarray reg_v
+    cdef public DOUBLE reg_0
+    cdef public DOUBLE reg_w
+    cdef public np.ndarray reg_v
 
-    cdef np.ndarray grad_w
-    cdef np.ndarray grad_v
+    cdef public np.ndarray grad_w
+    cdef public np.ndarray grad_v
 
-    cdef DOUBLE sumloss
-    cdef int count
+    cdef public DOUBLE sumloss
+    cdef public int count
 
     def __init__(self,
                   np.ndarray[DOUBLE, ndim=1, mode='c'] w,
@@ -140,10 +140,10 @@ cdef class FM_fast(object):
         self.grad_w = np.zeros(self.num_attributes)
         self.grad_v = np.zeros((self.num_factors, self.num_attributes))
 
-    cdef _predict_instance(self, DOUBLE * x_data_ptr, 
-                           INTEGER * x_ind_ptr, 
+    cdef _predict_instance(self, DOUBLE * x_data_ptr,
+                           INTEGER * x_ind_ptr,
                            int xnnz):
-        
+
         # Helper variables
         cdef DOUBLE result = 0.0
         cdef int feature
@@ -178,8 +178,8 @@ cdef class FM_fast(object):
         self.sum = sum_
         return result
 
-    cdef _predict_scaled(self, DOUBLE * x_data_ptr, 
-                           INTEGER * x_ind_ptr, 
+    cdef _predict_scaled(self, DOUBLE * x_data_ptr,
+                           INTEGER * x_ind_ptr,
                            int xnnz):
         cdef DOUBLE result = 0.0
         cdef unsigned int i = 0
@@ -221,7 +221,7 @@ cdef class FM_fast(object):
         return result
 
     def _predict(self, CSRDataset dataset):
-        
+
         # Helper access variables
         cdef unsigned int i = 0
         cdef Py_ssize_t n_samples = dataset.n_samples
@@ -231,9 +231,9 @@ cdef class FM_fast(object):
         cdef DOUBLE sample_weight = 1.0
         cdef DOUBLE y_placeholder
         cdef DOUBLE p = 0.0
-    
+
         cdef np.ndarray[DOUBLE, ndim=1, mode='c'] return_preds = np.zeros(n_samples)
-    
+
         for i in range(n_samples):
             dataset.next(& x_data_ptr, & x_ind_ptr, & xnnz, & y_placeholder,
                          & sample_weight)
@@ -245,12 +245,12 @@ cdef class FM_fast(object):
                 p = (1.0 / (1.0 + exp(-p)))
             return_preds[i] = p
         return return_preds
-    
-    cdef _sgd_theta_step(self, DOUBLE * x_data_ptr, 
-                        INTEGER * x_ind_ptr, 
+
+    cdef _sgd_theta_step(self, DOUBLE * x_data_ptr,
+                        INTEGER * x_ind_ptr,
                         int xnnz,
                         DOUBLE y):
-    
+
         cdef DOUBLE mult = 0.0
         cdef DOUBLE p
         cdef int feature
@@ -277,17 +277,17 @@ cdef class FM_fast(object):
             mult = 2 * (p - y);
         else:
             mult = y * ( (1.0 / (1.0+exp(-y*p))) - 1.0)
-        
+
         # Set learning schedule
         if self.learning_rate_schedule == OPTIMAL:
             self.learning_rate = 1.0 / (self.t + self.t0)
 
         elif self.learning_rate_schedule == INVERSE_SCALING:
             self.learning_rate = self.learning_rate / pow(self.t, self.power_t)
-    
+
         if self.verbose > 0:
             self.sumloss += _squared_loss(p,y) if self.task == REGRESSION else _log_loss(p,y)
-    
+
         # Update global bias
         if self.k0 > 0:
             grad_0 = mult
@@ -298,7 +298,7 @@ cdef class FM_fast(object):
             for i in range(xnnz):
                 feature = x_ind_ptr[i]
                 grad_w[feature] = mult * x_data_ptr[i]
-                w[feature] -= learning_rate * (grad_w[feature] 
+                w[feature] -= learning_rate * (grad_w[feature]
                                    + 2 * reg_w * w[feature])
 
         # Update feature factor vectors
@@ -307,7 +307,7 @@ cdef class FM_fast(object):
                 feature = x_ind_ptr[i]
                 grad_v[f,feature] = mult * (x_data_ptr[i] * (self.sum[f] - v[f,feature] * x_data_ptr[i]))
                 v[f,feature] -= learning_rate * (grad_v[f,feature] + 2 * reg_v[f] * v[f,feature])
-    
+
         # Pass updated vars to other functions
         self.learning_rate = learning_rate
         self.w0 = w0
@@ -319,8 +319,8 @@ cdef class FM_fast(object):
         self.t += 1
         self.count += 1
 
-    cdef _sgd_lambda_step(self, DOUBLE * validation_x_data_ptr, 
-                        INTEGER * validation_x_ind_ptr, 
+    cdef _sgd_lambda_step(self, DOUBLE * validation_x_data_ptr,
+                        INTEGER * validation_x_ind_ptr,
                         int validation_xnnz,
                         DOUBLE validation_y):
 
@@ -361,7 +361,7 @@ cdef class FM_fast(object):
             lambda_w_grad = -2 * learning_rate * lambda_w_grad
             reg_w -= learning_rate * grad_loss * lambda_w_grad
             reg_w = max(0.0, reg_w)
-        
+
         for f in xrange(self.num_factors):
             sum_f = 0.0
             sum_f_dash = 0.0
@@ -382,17 +382,17 @@ cdef class FM_fast(object):
         self.reg_v = reg_v
 
     def fit(self, CSRDataset dataset, CSRDataset validation_dataset):
-    
+
         # get the data information into easy vars
         cdef Py_ssize_t n_samples = dataset.n_samples
         cdef Py_ssize_t n_validation_samples = validation_dataset.n_samples
-        
+
         cdef DOUBLE * x_data_ptr = NULL
         cdef INTEGER * x_ind_ptr = NULL
-    
+
         cdef DOUBLE * validation_x_data_ptr = NULL
         cdef INTEGER * validation_x_ind_ptr = NULL
-    
+
         # helper variables
         cdef int xnnz
         cdef DOUBLE y = 0.0
@@ -401,34 +401,55 @@ cdef class FM_fast(object):
         cdef unsigned int count = 0
         cdef unsigned int epoch = 0
         cdef unsigned int i = 0
-    
+
         cdef DOUBLE sample_weight = 1.0
         cdef DOUBLE validation_sample_weight = 1.0
 
         for epoch in range(self.n_iter):
-    
+
             if self.verbose > 0:
                 print("-- Epoch %d" % (epoch + 1))
             self.count = 0
             self.sumloss = 0
             if self.shuffle_training:
                 dataset.shuffle(self.seed)
-    
+
             for i in range(n_samples):
                 dataset.next( & x_data_ptr, & x_ind_ptr, & xnnz, & y,
                              & sample_weight)
-    
+
                 self._sgd_theta_step(x_data_ptr, x_ind_ptr, xnnz, y)
-    
+
                 if epoch > 0:
                     validation_dataset.next( & validation_x_data_ptr, & validation_x_ind_ptr,
-                                             & validation_xnnz, & validation_y, 
+                                             & validation_xnnz, & validation_y,
                                              & validation_sample_weight)
                     self._sgd_lambda_step(validation_x_data_ptr, validation_x_ind_ptr,
                                           validation_xnnz, validation_y)
             if self.verbose > 0:
                 error_type = "MSE" if self.task == REGRESSION else "log loss"
                 print "Training %s: %.5f" % (error_type, (self.sumloss / self.count))
+
+    def __getstate__(self):
+        # Implements Pickle interface.
+        field_names = ["w0", "w", "v", "num_factors", "num_attributes",
+                       "n_iter", "k0", "k1", "t", "t0", "l", "power_t",
+                       "min_target", "max_target", "sum", "sum_sqr", "task",
+                       "learning_rate_schedule", "learning_rate",
+                       "shuffle_training", "seed", "verbose", "reg_0",
+                       "reg_w", "reg_v", "grad_w", "grad_v", "sumloss",
+                       "count"]
+
+        state = [field_names]
+        for field in field_names:
+            val = getattr(self ,field)
+            state.append(val)
+        return tuple(state)
+
+    def __setstate__(self, state):
+        # Implements Pickle interface.
+        for n, field in enumerate(state[0]):
+            setattr(self, field, state[n + 1])
 
 cdef inline double max(double a, double b):
     return a if a >= b else b
