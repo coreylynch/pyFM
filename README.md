@@ -118,7 +118,7 @@ FM MSE: 0.9227
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.cross_validation import train_test_split
-import pylibfm
+from pyfm import pylibfm
 
 from sklearn.datasets import make_classification
 
